@@ -13,6 +13,9 @@
         "bin/hangman"
     ],
     "autoload": {
+        "psr-4": {
+            "julysept\\hangman\\": "src/"
+        },
         "files": [
             "src/Controller.php",
             "src/View.php",
