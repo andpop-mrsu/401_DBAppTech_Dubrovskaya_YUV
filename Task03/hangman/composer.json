@@ -1,0 +1,21 @@
+{
+    "name": "julysept/hangman",
+    "authors": [
+        {
+            "name": "Yuliya Dubrovskaya",
+            "email": "julysept@ya.ru"
+        }
+    ],
+    "require": {
+        "wp-cli/php-cli-tools": "^0.12.6"
+    },
+    "bin": [
+        "bin/hangman"
+    ],
+    "autoload": {
+        "files": [
+            "src/Controller.php",
+            "src/View.php"
+        ]
+    }
+}
