@@ -2,7 +2,8 @@
 
 namespace julysept\hangman\Controller;
 
-use julysept\hangman\Model\{Game, Dictionary};
+use julysept\hangman\Model\{Game, Dictionary, Database};
+use julysept\hangman\Repository\{GameRepository, AttemptRepository};
 
 use function julysept\hangman\View\{
     showHelp,
@@ -25,14 +26,36 @@ function startGame(): void
 
     switch ($opts['mode']) {
         case 'list':
-            showMessage('Listing saved games is not implemented (DB not connected).');
+            $db = new Database();
+            $games = (new GameRepository($db->getConnection()))->listGames();
+
+            foreach ($games as $g) {
+                echo "{$g['id']}) {$g['date']} | {$g['player_name']} | {$g['word']} | {$g['result']}\n";
+            }
             return;
 
         case 'replay':
             if ($opts['replay_id'] === null) {
                 showMessage('Replay mode requires id: --replay <id>');
-            } else {
-                showMessage("Replay of game id {$opts['replay_id']} is not implemented (DB missing).");
+                return;
+            }
+
+            $db = new Database();
+            $pdo = $db->getConnection();
+            $gameRepo = new GameRepository($pdo);
+            $attemptRepo = new AttemptRepository($pdo);
+
+            $game = $gameRepo->getGameById($opts['replay_id']);
+            if (!$game) {
+                showMessage("Game id {$opts['replay_id']} not found.");
+                return;
+            }
+
+            showMessage("Replay: {$game['player_name']} vs word '{$game['word']}' ({$game['result']})");
+
+            $attempts = $attemptRepo->getAttempts($opts['replay_id']);
+            foreach ($attempts as $a) {
+                echo "Attempt {$a['attempt_number']}: '{$a['letter']}' — {$a['outcome']}\n";
             }
             return;
 
@@ -110,6 +133,13 @@ function runNewGame(array $opts): void
 
     $game = new Game($word);
 
+    $db = new Database();
+    $pdo = $db->getConnection();
+    $gameRepo = new GameRepository($pdo);
+    $attemptRepo = new AttemptRepository($pdo);
+
+    $gameId = $gameRepo->createGame($player, $word);
+
     showStartScreen($player);
 
     $attempts = 0;
@@ -132,11 +162,17 @@ function runNewGame(array $opts): void
         } else {
             showMessage("Already tried '{$letter}'");
         }
+
+        $outcome = $result === 'ok' ? 'correct' :
+            ($result === 'miss' ? 'wrong' : 'repeat');
+        $attemptRepo->addAttempt($gameId, $attempts, $letter, $outcome);
     }
 
     $won = $game->isWon();
     showHangman($game->getWrongCount());
     showMaskedWord($game->getMaskedWord());
     showResult($won, $game->getWord());
-    showMessage('Note: results are not saved — DB not implemented yet.');
+
+    $gameRepo->updateResult($gameId, $won ? 'won' : 'lost');
+    showMessage('Game saved to database.');
 }
