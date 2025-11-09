@@ -1,0 +1,120 @@
+body {
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 50px;
+  background-color: #f0f4f8;
+}
+
+.container {
+  display: flex;
+  height: 600px;  
+  gap: 40px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.left-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#hangman {
+  font-family: monospace;
+  white-space: pre;
+  font-size: 28px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+}
+
+#word {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#word .letter-box {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  font-weight: bold;
+  background-color: #fff;
+  transition: 0.2s;
+}
+
+#letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  max-width: 300px;
+  justify-content: center;
+}
+
+#letters button {
+  width: 40px;
+  height: 40px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  transition: 0.2s;
+}
+
+#letters button:hover:not(:disabled) {
+  background-color: #d0eaff;
+}
+
+#letters button:disabled {
+  background-color: #bbb;
+  cursor: default;
+}
+
+.right-panel {
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  height: 100%;
+}
+
+#message-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+}
+
+#message {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+#restart {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #4CAF50;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  align-self: center;
+  margin-bottom: 10px
+}
+
+#restart:hover {
+  background-color: #45a049;
+}
